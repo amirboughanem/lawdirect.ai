@@ -1,0 +1,120 @@
+/* ── Base button reset ── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border: none;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background var(--transition-base),
+              color var(--transition-base),
+              border-color var(--transition-base),
+              transform var(--transition-fast),
+              box-shadow var(--transition-base);
+}
+
+.btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.btn svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+/* ── Size variants ── */
+.btn--sm {
+  padding: 0.4rem 1rem;
+  font-size: 0.8rem;
+}
+
+.btn--md {
+  padding: 0.6rem 1.5rem;
+}
+
+.btn--lg {
+  padding: 0.75rem 2rem;
+  font-size: 0.95rem;
+}
+
+.btn--full {
+  width: 100%;
+  height: 46px;
+}
+
+/* ── Style variants ── */
+
+/* Solid primary */
+.btn--primary {
+  background: var(--color-primary);
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(17, 82, 212, 0.25);
+}
+
+.btn--primary:hover {
+  background: var(--color-primary-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(17, 82, 212, 0.35);
+}
+
+.btn--primary:active {
+  transform: translateY(0);
+}
+
+/* Outline */
+.btn--outline {
+  background: var(--color-surface);
+  color: var(--color-text);
+  border: 2px solid var(--color-border);
+}
+
+.btn--outline:hover {
+  background: #f8faff;
+  border-color: #93b4ff;
+  color: var(--color-primary);
+}
+
+/* Ghost (no border) */
+.btn--ghost {
+  background: transparent;
+  color: var(--color-text-muted);
+  border: none;
+}
+
+.btn--ghost:hover {
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+}
+
+/* Danger */
+.btn--danger {
+  background: var(--color-danger);
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(239, 68, 68, 0.25);
+}
+
+.btn--danger:hover {
+  background: #dc2626;
+  transform: translateY(-1px);
+}
+
+/* ── Icon-only button ── */
+.btn--icon {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border-radius: var(--radius-sm);
+}
+
+.btn--icon svg {
+  width: 18px;
+  height: 18px;
+}
