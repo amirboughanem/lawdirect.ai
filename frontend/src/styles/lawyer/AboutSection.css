@@ -1,0 +1,73 @@
+/* ── Main content column ── */
+.profile-main {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* ── Shared section card ── */
+.profile-section {
+  background: var(--color-surface);
+  border: 1px solid #e8edf3;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+.profile-section__header {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 1.25rem 1.75rem;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.profile-section__icon {
+  width: 22px;
+  height: 22px;
+  color: var(--color-primary);
+  flex-shrink: 0;
+}
+
+.profile-section__title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--color-text);
+  margin: 0;
+  font-family: var(--font-display);
+}
+
+.profile-section__view-all {
+  margin-left: auto;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.profile-section__view-all:hover {
+  text-decoration: underline;
+}
+
+.profile-section__body {
+  padding: 1.5rem 1.75rem;
+}
+
+/* ── Sub-heading inside sections ── */
+.profile-section__sub {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  margin: 0 0 0.75rem;
+}
+
+/* ── Biography text ── */
+.profile-section__bio {
+  font-size: 0.925rem;
+  line-height: 1.75;
+  color: #475569;
+  margin: 0;
+}
