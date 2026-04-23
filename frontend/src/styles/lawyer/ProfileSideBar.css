@@ -1,7 +1,3 @@
-/* ============================================================
-   ProfileSideBar.css  —  src/styles/lawyer/ProfileSideBar.css
-   ============================================================ */
-
 /* ── Page shell ── */
 .profile-page {
   flex: 1;
@@ -37,19 +33,10 @@
   transition: color var(--transition-fast);
 }
 
-.breadcrumb__item:hover {
-  color: var(--color-primary);
-}
-.breadcrumb__item--active {
-  color: #475569;
-}
-.breadcrumb__item--current {
-  color: var(--color-text);
-  font-weight: 600;
-}
-.breadcrumb__sep {
-  color: #cbd5e1;
-}
+.breadcrumb__item:hover { color: var(--color-primary); }
+.breadcrumb__item--active { color: #475569; }
+.breadcrumb__item--current { color: var(--color-text); font-weight: 600; }
+.breadcrumb__sep { color: #cbd5e1; }
 
 /* ── Two-column layout ── */
 .profile-layout {
@@ -80,12 +67,31 @@
   gap: 1rem;
   text-align: center;
   box-shadow: var(--shadow-sm);
+
+  animation: sidebar-enter 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: 0.1s;
 }
 
 /* Avatar */
 .sidebar-card__avatar-wrap {
   position: relative;
   margin-bottom: 0.25rem;
+}
+
+/* Animated ring on avatar wrap */
+.sidebar-card__avatar-wrap::after {
+  content: '';
+  position: absolute;
+  inset: -5px;
+  border-radius: 50%;
+  border: 2px solid #c7d9ff;
+  opacity: 0;
+  animation: avatar-ring 3s ease-in-out infinite;
+}
+
+@keyframes avatar-ring {
+  0%, 100% { opacity: 0; transform: scale(1); }
+  50%       { opacity: 0.6; transform: scale(1.04); }
 }
 
 .sidebar-card__avatar {
@@ -95,6 +101,12 @@
   border: 4px solid var(--color-surface);
   object-fit: cover;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+
+.sidebar-card__avatar:hover {
+  transform: scale(1.04);
+  box-shadow: 0 8px 30px rgba(17, 82, 212, 0.18);
 }
 
 .sidebar-card__avatar--fallback {
@@ -179,15 +191,8 @@
 }
 
 @keyframes pulse-available {
-  0%,
-  100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 0.5;
-    transform: scale(0.8);
-  }
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.5; transform: scale(0.8); }
 }
 
 /* Stats grid */
@@ -206,6 +211,14 @@
   background: #f8faff;
   border-radius: var(--radius-sm);
   padding: 0.625rem 0.25rem;
+  transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: default;
+}
+
+.stat-cell:hover {
+  background: var(--color-primary-light);
+  transform: translateY(-2px) scale(1.04);
+  box-shadow: 0 4px 12px rgba(17, 82, 212, 0.12);
 }
 
 .stat-cell__val {
@@ -256,12 +269,29 @@
   font-weight: 700;
   cursor: pointer;
   border: none;
-  transition: all var(--transition-base);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.2s ease;
 }
 
-.sidebar-card__btn svg {
-  width: 18px;
-  height: 18px;
+.sidebar-card__btn svg { width: 18px; height: 18px; }
+
+/* Ripple on click */
+.sidebar-card__btn::after {
+  content: '';
+  position: absolute;
+  inset: 50%;
+  border-radius: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  opacity: 0;
+  transition: transform 0.45s ease, opacity 0.45s ease;
+  pointer-events: none;
+}
+
+.sidebar-card__btn:active::after {
+  transform: translate(-50%, -50%) scale(4);
+  opacity: 1;
+  transition: 0s;
 }
 
 .sidebar-card__btn--primary {
@@ -270,9 +300,12 @@
   box-shadow: 0 4px 16px rgba(17, 82, 212, 0.28);
 }
 
+.sidebar-card__btn--primary::after { background: rgba(255, 255, 255, 0.25); }
+
 .sidebar-card__btn--primary:hover {
   background: var(--color-primary-dark);
   transform: translateY(-1px);
+  box-shadow: 0 7px 22px rgba(17, 82, 212, 0.38);
 }
 
 .sidebar-card__btn--outline {
@@ -281,11 +314,15 @@
   border: 2px solid #e2e8f0;
 }
 
+.sidebar-card__btn--outline::after { background: rgba(17, 82, 212, 0.06); }
+
 .sidebar-card__btn--outline:hover {
   background: #f8faff;
   border-color: #93b4ff;
   color: var(--color-primary);
+  transform: translateY(-1px);
 }
+
 
 /* ── Contact info card ── */
 .contact-card {
@@ -356,12 +393,8 @@
 
 /* Shimmer animation */
 @keyframes profile-shimmer {
-  0% {
-    background-position: -700px 0;
-  }
-  100% {
-    background-position: 700px 0;
-  }
+  0%   { background-position: -700px 0; }
+  100% { background-position:  700px 0; }
 }
 
 /* Shared shimmer applied to every skeleton piece */
@@ -376,7 +409,12 @@
 .sk-badge,
 .sk-section__icon,
 .sk-tl__dot {
-  background: linear-gradient(90deg, #e8edf3 0%, #f5f7fa 40%, #e8edf3 80%);
+  background: linear-gradient(
+    90deg,
+    #e8edf3 0%,
+    #f5f7fa 40%,
+    #e8edf3 80%
+  );
   background-size: 700px 100%;
   animation: profile-shimmer 1.6s ease-in-out infinite;
   border-radius: 6px;
@@ -395,23 +433,10 @@
   margin-bottom: 1.75rem;
 }
 
-.sk-bc__item {
-  height: 12px;
-  width: 48px;
-}
-.sk-bc__item--md {
-  width: 72px;
-  animation-delay: 0.05s;
-}
-.sk-bc__item--lg {
-  width: 100px;
-  animation-delay: 0.1s;
-}
-.sk-bc__sep {
-  width: 8px;
-  height: 12px;
-  opacity: 0.4;
-}
+.sk-bc__item        { height: 12px; width: 48px; }
+.sk-bc__item--md    { width: 72px; animation-delay: .05s; }
+.sk-bc__item--lg    { width: 100px; animation-delay: .1s; }
+.sk-bc__sep         { width: 8px; height: 12px; opacity: 0.4; }
 
 /* ── Skeleton sidebar ── */
 .sk-sidebar {
@@ -448,75 +473,25 @@
   width: 100%;
 }
 
-.sk-line--name {
-  height: 16px;
-  width: 55%;
-  animation-delay: 0.05s;
-}
-.sk-line--specialty {
-  height: 12px;
-  width: 42%;
-  animation-delay: 0.1s;
-}
-.sk-line--full {
-  height: 12px;
-  width: 100%;
-  animation-delay: 0.05s;
-}
-.sk-line--w80 {
-  height: 12px;
-  width: 80%;
-  animation-delay: 0.1s;
-}
-.sk-line--w60 {
-  height: 12px;
-  width: 60%;
-  animation-delay: 0.15s;
-}
-.sk-line--label {
-  height: 10px;
-  width: 38%;
-}
-.sk-line--court {
-  height: 12px;
-  width: 85%;
-  margin-bottom: 0.45rem;
-}
-.sk-line--contact-title {
-  height: 11px;
-  width: 50%;
-  animation-delay: 0.05s;
-}
-.sk-line--contact-val {
-  height: 11px;
-  width: 75%;
-  animation-delay: 0.1s;
-}
-.sk-line--section-title {
-  height: 15px;
-  width: 40%;
-  animation-delay: 0.05s;
-}
-.sk-line--tl-degree {
-  height: 14px;
-  width: 55%;
-}
-.sk-line--tl-year {
-  height: 12px;
-  width: 22%;
-  animation-delay: 0.05s;
-}
-.sk-line--tl-school {
-  height: 12px;
-  width: 65%;
-  animation-delay: 0.1s;
-}
+.sk-line--name      { height: 16px; width: 55%; animation-delay: .05s; }
+.sk-line--specialty { height: 12px; width: 42%; animation-delay: .1s; }
+.sk-line--full      { height: 12px; width: 100%; animation-delay: .05s; }
+.sk-line--w80       { height: 12px; width: 80%; animation-delay: .1s; }
+.sk-line--w60       { height: 12px; width: 60%; animation-delay: .15s; }
+.sk-line--label     { height: 10px; width: 38%; }
+.sk-line--court     { height: 12px; width: 85%; margin-bottom: .45rem; }
+.sk-line--contact-title { height: 11px; width: 50%; animation-delay: .05s; }
+.sk-line--contact-val   { height: 11px; width: 75%; animation-delay: .1s; }
+.sk-line--section-title { height: 15px; width: 40%; animation-delay: .05s; }
+.sk-line--tl-degree { height: 14px; width: 55%; }
+.sk-line--tl-year   { height: 12px; width: 22%; animation-delay: .05s; }
+.sk-line--tl-school { height: 12px; width: 65%; animation-delay: .1s; }
 
 .sk-sidebar__badge {
   height: 22px;
   width: 110px;
   border-radius: 999px !important;
-  animation-delay: 0.15s;
+  animation-delay: .15s;
 }
 
 /* Stats 3-cell grid */
@@ -532,12 +507,8 @@
   border-radius: var(--radius-sm) !important;
 }
 
-.sk-stat:nth-child(2) {
-  animation-delay: 0.07s;
-}
-.sk-stat:nth-child(3) {
-  animation-delay: 0.14s;
-}
+.sk-stat:nth-child(2) { animation-delay: .07s; }
+.sk-stat:nth-child(3) { animation-delay: .14s; }
 
 /* Button rows */
 .sk-sidebar__buttons {
@@ -553,12 +524,8 @@
   border-radius: 999px !important;
 }
 
-.sk-sidebar__btn--primary {
-  animation-delay: 0s;
-}
-.sk-sidebar__btn:last-child {
-  animation-delay: 0.08s;
-}
+.sk-sidebar__btn--primary { animation-delay: 0s; }
+.sk-sidebar__btn:last-child { animation-delay: .08s; }
 
 /* Contact card ghost */
 .sk-contact-card {
@@ -637,14 +604,8 @@
   border-radius: 999px !important;
 }
 
-.sk-badge--md {
-  width: 110px;
-  animation-delay: 0.06s;
-}
-.sk-badge--lg {
-  width: 140px;
-  animation-delay: 0.12s;
-}
+.sk-badge--md  { width: 110px; animation-delay: .06s; }
+.sk-badge--lg  { width: 140px; animation-delay: .12s; }
 
 /* Courts two-col grid */
 .sk-courts-grid {
@@ -690,9 +651,7 @@
   flex-shrink: 0;
 }
 
-.sk-tl__item:first-child .sk-tl__dot {
-  background: #c7d9ff !important;
-}
+.sk-tl__item:first-child .sk-tl__dot { background: #c7d9ff !important; }
 
 .sk-tl__content {
   flex: 1;
@@ -707,6 +666,7 @@
   align-items: center;
   gap: 1rem;
 }
+
 
 /* ── Not-found state ── */
 .profile-page__notfound {
@@ -730,20 +690,10 @@
   justify-content: center;
 }
 
-.notfound__icon svg {
-  width: 36px;
-  height: 36px;
-}
+.notfound__icon svg { width: 36px; height: 36px; }
 
-.profile-page__notfound h2 {
-  font-size: 1.4rem;
-  color: var(--color-text);
-  margin: 0;
-}
-.profile-page__notfound p {
-  font-size: 0.9rem;
-  margin: 0;
-}
+.profile-page__notfound h2 { font-size: 1.4rem; color: var(--color-text); margin: 0; }
+.profile-page__notfound p  { font-size: 0.9rem; margin: 0; }
 
 .notfound__btn {
   margin-top: 0.5rem;
@@ -759,9 +709,7 @@
   transition: background var(--transition-base);
 }
 
-.notfound__btn:hover {
-  background: var(--color-primary-dark);
-}
+.notfound__btn:hover { background: var(--color-primary-dark); }
 
 /* ── Responsive ── */
 @media (max-width: 1024px) {
@@ -783,5 +731,132 @@
   .profile-page__body,
   .profile-page__loading {
     padding: 1.25rem 1rem 3rem;
+  }
+}
+
+/* ════════════════════════════════════════════════
+   PROFILE PAGE ANIMATIONS & INTERACTIONS
+════════════════════════════════════════════════ */
+
+/* ── Sidebar entrance ── */
+@keyframes sidebar-enter {
+  from { opacity: 0; transform: translateX(-20px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* Contact card enters after sidebar card */
+.contact-card {
+  animation: sidebar-enter 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: 0.2s;
+}
+
+/* ── Profile sections slide in from right ── */
+.profile-section {
+  animation: section-enter 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.profile-section:nth-child(1) { animation-delay: 0.12s; }
+.profile-section:nth-child(2) { animation-delay: 0.22s; }
+.profile-section:nth-child(3) { animation-delay: 0.32s; }
+.profile-section:nth-child(4) { animation-delay: 0.42s; }
+
+@keyframes section-enter {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Section header icon spins once on hover ── */
+.profile-section__header:hover .profile-section__icon {
+  animation: icon-spin-once 0.5s ease;
+}
+
+@keyframes icon-spin-once {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(20deg); }
+}
+
+/* ── Breadcrumb links slide in ── */
+.breadcrumb__item {
+  animation: crumb-enter 0.4s ease both;
+}
+
+.breadcrumb > *:nth-child(1) { animation-delay: 0.02s; }
+.breadcrumb > *:nth-child(2) { animation-delay: 0.06s; }
+.breadcrumb > *:nth-child(3) { animation-delay: 0.10s; }
+.breadcrumb > *:nth-child(4) { animation-delay: 0.14s; }
+.breadcrumb > *:nth-child(5) { animation-delay: 0.18s; }
+.breadcrumb > *:nth-child(6) { animation-delay: 0.22s; }
+.breadcrumb > *:nth-child(7) { animation-delay: 0.26s; }
+
+@keyframes crumb-enter {
+  from { opacity: 0; transform: translateX(-6px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* ── Specialty badges float up on hover ── */
+.specialty-badge {
+  transition: background 0.15s ease, color 0.15s ease,
+              transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.specialty-badge:hover {
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(17, 82, 212, 0.14);
+}
+
+/* ── Timeline dot pulses on hover ── */
+.timeline__item:hover .timeline__dot--primary {
+  animation: dot-pop 0.35s ease;
+}
+
+@keyframes dot-pop {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(1.4); box-shadow: 0 0 0 5px rgba(17, 82, 212, 0.15); }
+  100% { transform: scale(1); }
+}
+
+/* ── Review cards lift on hover ── */
+.review-card {
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.review-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(17, 82, 212, 0.09);
+  border-color: #c7d9ff;
+}
+
+/* ── Contact card item icons pop on hover ── */
+.contact-card__item:hover .contact-card__icon-wrap {
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+  transform: scale(1.1);
+  transition: all 0.2s ease;
+}
+
+.contact-card__icon-wrap {
+  transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+/* ── Reduce motion ── */
+@media (prefers-reduced-motion: reduce) {
+  .sidebar-card,
+  .contact-card,
+  .profile-section,
+  .breadcrumb__item,
+  .sidebar-card__avatar-wrap::after {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .sidebar-card__btn,
+  .stat-cell,
+  .specialty-badge,
+  .review-card,
+  .lawyer-card__tag {
+    transition: none !important;
   }
 }

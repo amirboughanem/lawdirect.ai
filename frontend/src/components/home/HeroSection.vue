@@ -26,7 +26,7 @@
             xmlns="http://www.w3.org/2000/svg"
             aria-hidden="true"
           >
-            <path d="M2 8 Q 110 2 218 8" stroke="currentColor" stroke-width="4" fill="none" stroke-linecap="round"/>
+            <path d="M2 8 Q 110 2 218 8" stroke="currentColor" stroke-width="4" fill="none" stroke-linecap="round" pathLength="120"/>
           </svg>
         </span>
         for Your Case
@@ -39,7 +39,9 @@
       </p>
 
       <!-- Search box injected from parent (Home.vue) -->
-      <slot name="search" />
+      <div class="hero__search-slot">
+        <slot name="search" />
+      </div>
 
       <!-- Trust strip -->
       <div class="hero__trust">
