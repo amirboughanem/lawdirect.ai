@@ -1,6 +1,5 @@
 import supabase from '../config/database.js';
-
-const LAWYER_TABLE = 'lawyers';
+import { LAWYER_TABLE } from '../config/constants.js';
 
 export const fetchLawyer = async (req, res) => {
   try {
