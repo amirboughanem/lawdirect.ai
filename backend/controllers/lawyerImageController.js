@@ -6,17 +6,13 @@ export const fetchLawyerImage = async (req, res) => {
     const lawyerId = req.params.lawyerId;
     const imageFileName = `${lawyerId}.png`;
 
-    let { data, error } = await supabase.storage.from(LAWYER_IMAGE_BUCKET).list();
+    let { data } = await supabase.storage.from(LAWYER_IMAGE_BUCKET).list();
 
     if (!doesImageExist(data, imageFileName)) {
       return res.status(404).json({ message: `Image for lawyer with ID ${lawyerId} not found.` });
     }
 
-    ({ data, error } = await supabase.storage.from(LAWYER_IMAGE_BUCKET).getPublicUrl(imageFileName));
-
-    if (error) {
-      return res.status(404).json({ message: `Error while fetching image URL for lawyer with ID ${lawyerId}.` });
-    }
+    ({ data } = await supabase.storage.from(LAWYER_IMAGE_BUCKET).getPublicUrl(imageFileName));
 
     return res
       .status(200)
