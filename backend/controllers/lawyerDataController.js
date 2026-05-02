@@ -1,8 +1,7 @@
 import supabase from '../config/database.js';
+import { LAWYER_TABLE } from '../config/constants.js';
 
-const LAWYER_TABLE = 'lawyers';
-
-export const fetchLawyerById = async (req, res) => {
+export const fetchLawyer = async (req, res) => {
   try {
     const lawyerId = req.params.lawyerId;
 
@@ -10,7 +9,7 @@ export const fetchLawyerById = async (req, res) => {
       return res.status(400).json({ message: `Lawyer ID ${lawyerId} is invalid for this request.` });
     }
 
-    const lawyer = await getLawyerById(lawyerId);
+    const lawyer = await getLawyer(lawyerId);
 
     if (!lawyer) {
       return res.status(404).json({ message: `Lawyer with ID ${lawyerId} not found.` });
@@ -29,7 +28,7 @@ const isLawyerIdValid = (id) => {
   return Number.isInteger(num) && num > 0;
 };
 
-const getLawyerById = async (id) => {
+const getLawyer = async (id) => {
   const { data, error } = await supabase
     .schema(process.env.SUPABASE_SCHEMA)
     .from(LAWYER_TABLE)
