@@ -1,8 +1,10 @@
 import express from 'express';
-import { fetchLawyerById } from '../controllers/lawyerDataController.js';
+import { fetchLawyer } from '../controllers/lawyerDataController.js';
+import { fetchLawyerImage } from '../controllers/lawyerImageController.js';
 
 const router = express.Router();
 
-router.get('/:lawyerId', fetchLawyerById);
+router.get('/:lawyerId', fetchLawyer);
+router.get('/:lawyerId/image', fetchLawyerImage);
 
 export default router;
