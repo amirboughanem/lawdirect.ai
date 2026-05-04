@@ -1,3 +1,9 @@
+/* ============================================================
+   AboutSection.css  —  src/styles/lawyer/AboutSection.css
+   Enhanced: section hover lift, header interaction,
+             bio text fade-in, view-all arrow slide
+   ============================================================ */
+
 /* ── Main content column ── */
 .profile-main {
   display: flex;
@@ -5,28 +11,51 @@
   gap: 1.5rem;
 }
 
-/* ── Shared section card ── */
+/* ── Section card ── */
 .profile-section {
   background: var(--color-surface);
   border: 1px solid #e8edf3;
   border-radius: var(--radius-lg);
   overflow: hidden;
   box-shadow: var(--shadow-sm);
+  transition: border-color 0.25s ease,
+              box-shadow 0.25s ease,
+              transform 0.25s ease;
 }
 
+/* Subtle lift on section hover — less aggressive than cards */
+.profile-section:hover {
+  border-color: #d0e0ff;
+  box-shadow: 0 6px 24px rgba(17, 82, 212, 0.07);
+  transform: translateY(-1px);
+}
+
+/* ── Section header ── */
 .profile-section__header {
   display: flex;
   align-items: center;
   gap: 0.625rem;
   padding: 1.25rem 1.75rem;
   border-bottom: 1px solid #f1f5f9;
+  transition: background 0.2s ease;
 }
 
+.profile-section:hover .profile-section__header {
+  background: #fafbff;
+}
+
+/* Icon bounce on section hover */
 .profile-section__icon {
   width: 22px;
   height: 22px;
   color: var(--color-primary);
   flex-shrink: 0;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+              color 0.2s ease;
+}
+
+.profile-section:hover .profile-section__icon {
+  transform: scale(1.2) rotate(-8deg);
 }
 
 .profile-section__title {
@@ -35,8 +64,14 @@
   color: var(--color-text);
   margin: 0;
   font-family: var(--font-display);
+  transition: color 0.2s ease;
 }
 
+.profile-section:hover .profile-section__title {
+  color: var(--color-primary);
+}
+
+/* "View all" link — arrow slides right on hover */
 .profile-section__view-all {
   margin-left: auto;
   font-size: 0.8rem;
@@ -44,17 +79,36 @@
   color: var(--color-primary);
   text-decoration: none;
   white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 6px;
+  transition: background 0.18s ease, transform 0.18s ease;
+}
+
+.profile-section__view-all::after {
+  content: '→';
+  font-size: 0.85rem;
+  display: inline-block;
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .profile-section__view-all:hover {
-  text-decoration: underline;
+  background: var(--color-primary-light);
+  text-decoration: none;
 }
 
+.profile-section__view-all:hover::after {
+  transform: translateX(4px);
+}
+
+/* ── Section body ── */
 .profile-section__body {
   padding: 1.5rem 1.75rem;
 }
 
-/* ── Sub-heading inside sections ── */
+/* ── Sub-heading ── */
 .profile-section__sub {
   font-size: 0.72rem;
   font-weight: 700;
@@ -64,10 +118,39 @@
   margin: 0 0 0.75rem;
 }
 
-/* ── Biography text ── */
+/* ── Biography text — fades in with a slight upward drift ── */
 .profile-section__bio {
   font-size: 0.925rem;
   line-height: 1.75;
   color: #475569;
   margin: 0;
+  animation: bio-enter 0.6s ease both 0.2s;
+}
+
+@keyframes bio-enter {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Highlight selection in bio text with brand colour */
+.profile-section__bio::selection {
+  background: #c7d9ff;
+  color: var(--color-primary);
+}
+
+/* ── Reduce motion ── */
+@media (prefers-reduced-motion: reduce) {
+  .profile-section,
+  .profile-section__icon,
+  .profile-section__view-all::after,
+  .profile-section__bio {
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+    opacity: 1 !important;
+  }
+
+  .profile-section:hover {
+    transform: none !important;
+  }
 }
