@@ -124,6 +124,8 @@
 /* Search box scales up from 95% */
 .hero__search-slot {
   width: 100%;
+  max-width: 680px;
+  margin: 0 auto;
   animation: scale-in 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
   animation-delay: 0.38s;
 }
