@@ -16,7 +16,7 @@ export const fetchLawyerImage = async (req, res) => {
 
     return res
       .status(200)
-      .json({ imageUrl: data.publicUrl, message: `Image URL for lawyer with ID ${lawyerId} returned.` });
+      .json({ image_url: data.publicUrl, message: `Image URL for lawyer with ID ${lawyerId} returned.` });
   } catch (error) {
     console.error(`Error fetching lawyer: `, error);
 
