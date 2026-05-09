@@ -7,7 +7,6 @@ const MOCK_LAWYERS = [
   {
     id: 1,
     name: 'Rami Khoury',
-    primarySpecialty: 'Personal Injury',
     specialties: ['Personal Injury', 'Civil Litigation'],
     jurisdictions: ['Court of Appeal', 'First Instance Court'],
     yearsExperience: 15,
@@ -27,7 +26,6 @@ const MOCK_LAWYERS = [
   {
     id: 2,
     name: 'Sarah Nassar',
-    primarySpecialty: 'Traffic & Liability Law',
     specialties: ['Traffic Law', 'Civil Liability'],
     jurisdictions: ['Magistrate Court', 'First Instance Court'],
     yearsExperience: 8,
@@ -47,7 +45,6 @@ const MOCK_LAWYERS = [
   {
     id: 3,
     name: 'Georges Abou Zeid',
-    primarySpecialty: 'Senior Litigator',
     specialties: ['Commercial Litigation', 'Corporate Law'],
     jurisdictions: ['Court of Cassation', 'Court of Appeal'],
     yearsExperience: 22,
@@ -67,7 +64,6 @@ const MOCK_LAWYERS = [
   {
     id: 4,
     name: 'Lara Haddad',
-    primarySpecialty: 'Family & Civil Law',
     specialties: ['Family Law', 'Civil Disputes'],
     jurisdictions: ['Personal Status Court', 'First Instance Court'],
     yearsExperience: 6,
@@ -87,7 +83,6 @@ const MOCK_LAWYERS = [
   {
     id: 5,
     name: 'Charbel Rizk',
-    primarySpecialty: 'Criminal Defense',
     specialties: ['Criminal Law', 'Traffic Offenses'],
     jurisdictions: ['Criminal Court', 'First Instance Court'],
     yearsExperience: 11,
@@ -107,7 +102,6 @@ const MOCK_LAWYERS = [
   {
     id: 6,
     name: 'Maya Sleiman',
-    primarySpecialty: 'Dispute Resolution',
     specialties: ['Mediation', 'Arbitration', 'Civil Law'],
     jurisdictions: ['Arbitration Panel', 'First Instance Court'],
     yearsExperience: 4,

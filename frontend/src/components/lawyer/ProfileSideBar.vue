@@ -32,7 +32,7 @@
             <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/>
           </svg>
         </div>
-        <p class="sidebar-card__specialty">{{ primarySpecialty }}</p>
+        <p class="sidebar-card__specialty">{{ specialty }}</p>
         <div v-if="isOnline" class="sidebar-card__available-badge">
           <span class="sidebar-card__available-dot"></span>
           Available Now
@@ -130,7 +130,7 @@ import '@/styles/lawyer/ProfileSideBar.css'
 
 const props = defineProps({
   name:            { type: String,  required: true },
-  primarySpecialty:{ type: String,  default: '' },
+  specialty:{ type: String,  default: '' },
   image:           { type: String,  default: null },
   verified:        { type: Boolean, default: false },
   isOnline:        { type: Boolean, default: false },

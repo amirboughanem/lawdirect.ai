@@ -39,7 +39,7 @@
           </svg>
         </div>
 
-        <p class="lawyer-card__specialty">{{ lawyer.primarySpecialty }}</p>
+        <p class="lawyer-card__specialty">{{ lawyer.specialties?.[0] }}</p>
 
         <!-- Star + number + count -->
         <div class="lawyer-card__rating">

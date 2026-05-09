@@ -17,7 +17,6 @@
         <a href="#" class="footer__link">Privacy Policy</a>
         <a href="#" class="footer__link">Terms of Service</a>
         <a href="#" class="footer__link">Support</a>
-        <a href="#" class="footer__link">For Lawyers</a>
       </nav>
 
       <!-- Disclaimer -->

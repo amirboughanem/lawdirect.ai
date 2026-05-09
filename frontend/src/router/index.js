@@ -13,6 +13,16 @@ const routes = [
     component: () => import('@/views/LawyerProfile.vue'),
     props: true,
   },
+  {
+    path: '/how-it-works',
+    name: 'HowItWorks',
+    component: () => import('@/views/HowItWorks.vue'),
+  },
+  {
+    path: '/about',
+    name: 'About',
+    component: () => import('@/views/HowItWorks.vue'), // reuse until About page is built
+  },
 ]
 
 const router = createRouter({
