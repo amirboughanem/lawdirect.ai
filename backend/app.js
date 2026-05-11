@@ -2,17 +2,25 @@ import dotenv from 'dotenv';
 import express from 'express';
 import cors from 'cors';
 import supabase from './config/database.js';
-
 import lawyerDetailsRouter from './routes/lawyerRoutes.js';
+import adminRouter from './routes/adminRoutes.js';
 
 const app = express();
 
 dotenv.config();
+
+// Middleware
 app.use(cors());
-app.use(`/${process.env.API_VERSION}/lawyers`, lawyerDetailsRouter);
 app.use(express.json());
 
-app.get('/test', async (req, res) => {
+// Routes
+if (process.env.ENABLE_ADMIN_ROUTES == 'true') {
+  app.use('/api/admin', adminRouter);
+}
+
+app.use(`/${process.env.API_VERSION}/lawyers`, lawyerDetailsRouter);
+
+app.get('/hello', async (req, res) => {
   const { data, error } = await supabase
     .schema(process.env.SUPABASE_SCHEMA)
     .from('specialties')
