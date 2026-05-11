@@ -713,7 +713,10 @@
 
 /* ── Responsive ── */
 @media (max-width: 1024px) {
-  .profile-layout,
+  .profile-layout {
+    grid-template-columns: 1fr;
+  }
+
   .sk-sidebar {
     grid-column: 1 / -1;
   }
@@ -726,6 +729,7 @@
     grid-template-columns: 1fr;
   }
 }
+
 
 @media (max-width: 640px) {
   .profile-page__body,
