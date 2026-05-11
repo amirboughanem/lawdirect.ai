@@ -21,7 +21,7 @@ const routes = [
   {
     path: '/about',
     name: 'About',
-    component: () => import('@/views/HowItWorks.vue'), // reuse until About page is built
+    component: () => import('@/views/AboutLawdirect.vue'),
   },
 ]
 
