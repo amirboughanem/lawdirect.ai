@@ -1,0 +1,41 @@
+/* ============================================================
+   main.css
+   Global layout: #app shell, page transitions, view wrappers
+   ============================================================ */
+
+@import './base.css';
+
+#app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* ── Page transition (used in App.vue router-view) ────── */
+.page-enter-active,
+.page-leave-active {
+  transition: opacity var(--transition-base), transform var(--transition-base);
+}
+
+.page-enter-from {
+  opacity: 0;
+  transform: translateY(8px);
+}
+
+.page-leave-to {
+  opacity: 0;
+  transform: translateY(-4px);
+}
+
+/* ── Page-level containers ──────────────────────────────── */
+.page-content {
+  flex: 1;
+  background: var(--color-bg);
+  min-height: calc(100vh - 64px); /* 64px = navbar height */
+}
+
+.page-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
