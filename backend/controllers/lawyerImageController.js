@@ -91,7 +91,7 @@ export const uploadLawyerImage = async (req, res) => {
       throw error;
     }
 
-    return res.status(200).json({ image_url: imageUrl, message: `Image URL for lawyer with ID ${lawyerId} returned.` });
+    return res.status(201).json({ image_url: imageUrl, message: `Image URL for lawyer with ID ${lawyerId} returned.` });
   } catch (err) {
     console.error(`[ADMIN] [CONTROLLER] ERROR UPLOADING LAWYER IMAGE: `, err);
     return res.status(500).json({ message: err.message });
