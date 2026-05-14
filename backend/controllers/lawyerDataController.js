@@ -19,9 +19,9 @@ export const fetchLawyer = async (req, res) => {
 
     res.status(200).json({ lawyer, message: `Lawyer with ID ${lawyerId} returned.` });
   } catch (error) {
-    console.error(`Error fetching lawyer: `, error);
+    console.error(`[LAWYER] [CONTROLLER] ERROR FETCHING LAWYER: `, error);
 
-    res.status(500).json({ error });
+    return res.status(500).json({ message: error.message });
   }
 };
 
@@ -107,7 +107,9 @@ export const createLawyer = async (req, res) => {
     await updateLawyerEmbedding(data.lawyer_id, embedding);
     return res.status(201).json({ message: 'Lawyer created successfully', lawyer_id: data.lawyer_id });
   } catch (err) {
-    return res.status(500).json({ message: 'Server error', error: err });
+    console.error(`[LAWYER] [CONTROLLER] ERROR INSERTING LAWYER: `, err);
+
+    return res.status(500).json({ message: err.message });
   }
 };
 
@@ -124,8 +126,6 @@ const updateLawyerBio = async (lawyerId, bio) => {
 };
 
 const updateLawyerEmbedding = async (lawyerId, embedding) => {
-  console.log('EMBEDDING: ' + embedding);
-
   const { error } = await supabase
     .schema(process.env.SUPABASE_SCHEMA)
     .from(LAWYER_TABLE)
