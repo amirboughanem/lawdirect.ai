@@ -1,5 +1,5 @@
 import supabase from '../config/database.js';
-import { LAWYER_TABLE } from '../config/constants.js';
+import { LAWYER_ID, LAWYER_TABLE } from '../config/constants.js';
 import generateBio from '../utils/bioGenerator.js';
 import generateEmbedding from '../utils/embeddingGenerator.js';
 
@@ -46,7 +46,7 @@ const getLawyer = async (id) => {
 			gender
 			`,
     )
-    .eq('lawyer_id', id)
+    .eq(LAWYER_ID, id)
     .maybeSingle();
 
   if (error) {
@@ -118,7 +118,7 @@ const updateLawyerBio = async (lawyerId, bio) => {
     .schema(process.env.SUPABASE_SCHEMA)
     .from(LAWYER_TABLE)
     .update({ bio })
-    .eq('lawyer_id', lawyerId);
+    .eq(LAWYER_ID, lawyerId);
 
   if (error) {
     throw error;
@@ -130,7 +130,7 @@ const updateLawyerEmbedding = async (lawyerId, embedding) => {
     .schema(process.env.SUPABASE_SCHEMA)
     .from(LAWYER_TABLE)
     .update({ embedding })
-    .eq('lawyer_id', lawyerId);
+    .eq(LAWYER_ID, lawyerId);
 
   if (error) {
     throw error;

@@ -1,5 +1,5 @@
 import supabase from '../config/database.js';
-import { LAWYER_TABLE } from '../config/constants.js';
+import { LAWYER_ID, LAWYER_TABLE } from '../config/constants.js';
 
 export const fetchLawyerImage = async (req, res) => {
   try {
@@ -48,7 +48,7 @@ export const uploadLawyerImage = async (req, res) => {
 			gender
 			`,
       )
-      .eq('lawyer_id', lawyerId)
+      .eq(LAWYER_ID, lawyerId)
       .single();
 
     if (error) {
@@ -85,7 +85,7 @@ export const uploadLawyerImage = async (req, res) => {
       .schema(process.env.SUPABASE_SCHEMA)
       .from(LAWYER_TABLE)
       .update({ image_url: imageUrl })
-      .eq('lawyer_id', lawyerId));
+      .eq(LAWYER_ID, lawyerId));
 
     if (error) {
       throw error;
