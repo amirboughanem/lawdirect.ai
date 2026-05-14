@@ -53,7 +53,7 @@ export const uploadLawyerImage = async (req, res) => {
 
     if (error) {
       if (error.code === 'PGRST116') {
-        return res.status(400).json({ message: `Invalid lawyer ID ${lawyerId}.` });
+        return res.status(404).json({ message: `Invalid lawyer ID ${lawyerId}.` });
       }
 
       throw error;
@@ -74,7 +74,7 @@ export const uploadLawyerImage = async (req, res) => {
       .upload(imageFileName, file.buffer, { contentType: file.mimetype, upsert: true }));
 
     if (error) {
-      return res.status(500).json({ message: 'Failed to upload lawyer image.' });
+      throw new Error('Failed to upload lawyer image.');
     }
 
     ({ data } = supabase.storage.from(process.env.LAWYER_SUPABASE_IMAGE_BUCKET).getPublicUrl(imageFileName));
