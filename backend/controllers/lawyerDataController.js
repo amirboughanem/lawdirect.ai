@@ -1,5 +1,5 @@
 import supabase from '../config/database.js';
-import { LAWYER_TABLE } from '../config/constants.js';
+import { LAWYER_ID, LAWYER_TABLE } from '../config/constants.js';
 import generateBio from '../utils/bioGenerator.js';
 import generateEmbedding from '../utils/embeddingGenerator.js';
 
@@ -19,9 +19,9 @@ export const fetchLawyer = async (req, res) => {
 
     res.status(200).json({ lawyer, message: `Lawyer with ID ${lawyerId} returned.` });
   } catch (error) {
-    console.error(`Error fetching lawyer: `, error);
+    console.error(`[LAWYER] [CONTROLLER] ERROR FETCHING LAWYER: `, error);
 
-    res.status(500).json({ error });
+    return res.status(500).json({ message: error.message });
   }
 };
 
@@ -46,7 +46,7 @@ const getLawyer = async (id) => {
 			gender
 			`,
     )
-    .eq('lawyer_id', id)
+    .eq(LAWYER_ID, id)
     .maybeSingle();
 
   if (error) {
@@ -107,7 +107,9 @@ export const createLawyer = async (req, res) => {
     await updateLawyerEmbedding(data.lawyer_id, embedding);
     return res.status(201).json({ message: 'Lawyer created successfully', lawyer_id: data.lawyer_id });
   } catch (err) {
-    return res.status(500).json({ message: 'Server error', error: err });
+    console.error(`[LAWYER] [CONTROLLER] ERROR INSERTING LAWYER: `, err);
+
+    return res.status(500).json({ message: err.message });
   }
 };
 
@@ -116,7 +118,7 @@ const updateLawyerBio = async (lawyerId, bio) => {
     .schema(process.env.SUPABASE_SCHEMA)
     .from(LAWYER_TABLE)
     .update({ bio })
-    .eq('lawyer_id', lawyerId);
+    .eq(LAWYER_ID, lawyerId);
 
   if (error) {
     throw error;
@@ -124,13 +126,11 @@ const updateLawyerBio = async (lawyerId, bio) => {
 };
 
 const updateLawyerEmbedding = async (lawyerId, embedding) => {
-  console.log('EMBEDDING: ' + embedding);
-
   const { error } = await supabase
     .schema(process.env.SUPABASE_SCHEMA)
     .from(LAWYER_TABLE)
     .update({ embedding })
-    .eq('lawyer_id', lawyerId);
+    .eq(LAWYER_ID, lawyerId);
 
   if (error) {
     throw error;
