@@ -1,32 +1,6 @@
 import supabase from '../config/database.js';
 import { LAWYER_ID, LAWYER_TABLE } from '../config/constants.js';
 
-export const fetchLawyerImage = async (req, res) => {
-  try {
-    const lawyerId = req.params.lawyerId;
-    const imageFileName = `${lawyerId}.png`;
-
-    let { data } = await supabase.storage.from(process.env.LAWYER_SUPABASE_IMAGE_BUCKET).list();
-
-    if (!doesImageExist(data, imageFileName)) {
-      return res.status(404).json({ message: `Image for lawyer with ID ${lawyerId} not found.` });
-    }
-
-    ({ data } = await supabase.storage.from(process.env.LAWYER_SUPABASE_IMAGE_BUCKET).getPublicUrl(imageFileName));
-
-    return res
-      .status(200)
-      .json({ image_url: data.publicUrl, message: `Image URL for lawyer with ID ${lawyerId} returned.` });
-  } catch (err) {
-    console.error(`[ADMIN] [CONTROLLER] ERROR FETCHING LAWYER IMAGE: `, err);
-    return res.status(500).json({ message: err.message });
-  }
-};
-
-const doesImageExist = (bucketFiles, imageFileName) => {
-  return bucketFiles.some((file) => file.name === imageFileName);
-};
-
 export const uploadLawyerImage = async (req, res) => {
   try {
     const { lawyerId } = req.params;

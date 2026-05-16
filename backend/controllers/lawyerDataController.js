@@ -17,7 +17,7 @@ export const fetchLawyer = async (req, res) => {
       return res.status(404).json({ message: `Lawyer with ID ${lawyerId} not found.` });
     }
 
-    res.status(200).json({ lawyer, message: `Lawyer with ID ${lawyerId} returned.` });
+    return res.status(200).json({ lawyer: formatLawyerData(lawyer), message: `Lawyer with ID ${lawyerId} returned.` });
   } catch (error) {
     console.error(`[LAWYER] [CONTROLLER] ERROR FETCHING LAWYER: `, error);
 
@@ -36,14 +36,35 @@ const getLawyer = async (id) => {
     .from(LAWYER_TABLE)
     .select(
       `
-			lawyer_id,
 			name,
 			years_of_experience,
+      education,
 			image_url,
 			rating,
 			hourly_rate,
 			reviews_count,
-			gender
+			gender,
+      email,
+      phone_number,
+      governorate, 
+      gender,
+      bio,
+
+      lawyer_specialties (
+        specialties (
+          name
+        )
+      ),
+      lawyer_jurisdictions (
+        jurisdictions (
+          name
+        )
+      ),
+      lawyer_languages (
+        languages (
+          name
+        )
+      )
 			`,
     )
     .eq(LAWYER_ID, id)
@@ -51,7 +72,6 @@ const getLawyer = async (id) => {
 
   if (error) {
     if (error.code === 'PGRST116') {
-      // no rows found
       return null;
     }
 
@@ -59,6 +79,15 @@ const getLawyer = async (id) => {
   }
 
   return data;
+};
+
+const formatLawyerData = (lawyer) => {
+  return {
+    ...lawyer,
+    lawyer_specialties: lawyer.lawyer_specialties.map((item) => item.specialties.name),
+    lawyer_jurisdictions: lawyer.lawyer_jurisdictions.map((item) => item.jurisdictions.name),
+    lawyer_languages: lawyer.lawyer_languages.map((item) => item.languages.name),
+  };
 };
 
 export const createLawyer = async (req, res) => {
