@@ -7,7 +7,7 @@ export default async function generateEmbedding(bio) {
   const output = await huggingface.featureExtraction({
     model: EMBEDDING_MODEL,
     provider: 'hf-inference',
-    inputs: [bio.split('\n')],
+    inputs: [bio.split(/[.!?\n]+/)],
   });
 
   return output[0];
