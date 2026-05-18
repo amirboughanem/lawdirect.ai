@@ -5,8 +5,6 @@ export const getSuggestedLawyers = async (req, res) => {
   try {
     const userPrompt = req.body.user_prompt;
 
-    console.log(userPrompt);
-
     if (!isPromptValid(userPrompt)) {
       return res.status(400).json({ message: `Prompt is invalid.` });
     }
@@ -59,8 +57,6 @@ const matchLawyers = async (embedding) => {
 
     throw error;
   }
-
-  console.log(data);
 
   return data;
 };
