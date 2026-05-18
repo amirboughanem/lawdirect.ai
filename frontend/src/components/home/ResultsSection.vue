@@ -1,7 +1,8 @@
 <template>
   <section class="results" v-if="hasSearched || lawyers.length > 0">
     <div class="results__container">
-      <!-- ── Section header ── -->
+
+      <!-- ── Header ── -->
       <div class="results__header">
         <div class="results__header-left">
           <h2 class="results__title">
@@ -16,34 +17,22 @@
         <div class="results__controls">
           <button class="results__ctrl-btn" @click="filtersOpen = !filtersOpen" type="button">
             <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-              <path d="M10 18h4v-2h-4v2zM3 6v2h18V6H3zm3 7h12v-2H6v2z" />
+              <path d="M10 18h4v-2h-4v2zM3 6v2h18V6H3zm3 7h12v-2H6v2z"/>
             </svg>
             Filters
-            <span v-if="activeFilterCount > 0" class="results__filter-badge">
-              {{ activeFilterCount }}
-            </span>
+            <span v-if="activeFilterCount > 0" class="results__filter-badge">{{ activeFilterCount }}</span>
           </button>
 
           <div class="results__sort-wrap">
-            <select
-              class="results__sort"
-              v-model="sortBy"
-              @change="applySort"
-              aria-label="Sort results"
-            >
+            <select class="results__sort" v-model="sortBy" @change="applySort" aria-label="Sort results">
               <option value="recommended">Sort by: Recommended</option>
               <option value="rating">Highest Rated</option>
               <option value="experience">Most Experienced</option>
               <option value="rate_asc">Lowest Rate</option>
               <option value="rate_desc">Highest Rate</option>
             </select>
-            <svg
-              class="results__sort-arrow"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-              aria-hidden="true"
-            >
-              <path d="M7 10l5 5 5-5z" />
+            <svg class="results__sort-arrow" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M7 10l5 5 5-5z"/>
             </svg>
           </div>
         </div>
@@ -77,28 +66,16 @@
           </div>
           <div class="filter-group">
             <label class="filter-label" for="filter-rate">Max Rate ($/hr)</label>
-            <input
-              id="filter-rate"
-              type="range"
-              v-model.number="filters.maxRate"
-              min="50"
-              max="1000"
-              step="25"
-              class="filter-range"
-            />
+            <input id="filter-rate" type="range" v-model.number="filters.maxRate" min="50" max="1000" step="25" class="filter-range"/>
             <span class="filter-range-val">${{ filters.maxRate }}</span>
           </div>
           <button class="filter-clear" @click="clearFilters" type="button">Clear All</button>
         </div>
       </transition>
 
-      <!-- ══════════════════════════════════════════
-           SKELETON GHOST CARDS — shown while loading
-           Each card mirrors the exact structure of LawyerCard
-      ══════════════════════════════════════════ -->
+      <!-- ── Skeleton (loading) ── -->
       <div v-if="isLoading" class="results__grid" aria-busy="true" aria-label="Loading lawyers">
         <div v-for="n in 6" :key="n" class="skeleton-card">
-          <!-- Header row: avatar circle + info lines -->
           <div class="skeleton-card__header">
             <div class="skeleton-card__avatar"></div>
             <div class="skeleton-card__info">
@@ -107,22 +84,16 @@
               <div class="skeleton-card__line skeleton-card__line--rating"></div>
             </div>
           </div>
-
-          <!-- Tags row -->
           <div class="skeleton-card__tags">
             <div class="skeleton-card__tag"></div>
             <div class="skeleton-card__tag skeleton-card__tag--md"></div>
             <div class="skeleton-card__tag skeleton-card__tag--sm"></div>
           </div>
-
-          <!-- Bio lines -->
           <div class="skeleton-card__bio">
             <div class="skeleton-card__line skeleton-card__line--bio-1"></div>
             <div class="skeleton-card__line skeleton-card__line--bio-2"></div>
             <div class="skeleton-card__line skeleton-card__line--bio-3"></div>
           </div>
-
-          <!-- Action buttons row -->
           <div class="skeleton-card__actions">
             <div class="skeleton-card__btn"></div>
             <div class="skeleton-card__btn"></div>
@@ -130,12 +101,18 @@
         </div>
       </div>
 
-      <!-- ── Empty state ── -->
+      <!-- ── API error ── -->
+      <div v-else-if="error" class="results__empty">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+        </svg>
+        <p>{{ error }}</p>
+      </div>
+
+      <!-- ── Empty after filters ── -->
       <div v-else-if="filteredLawyers.length === 0" class="results__empty">
         <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-          <path
-            d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"
-          />
+          <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
         </svg>
         <p>No lawyers match your current filters.</p>
         <button @click="clearFilters" type="button">Clear Filters</button>
@@ -152,8 +129,8 @@
         />
       </div>
 
-      <!-- ── Show More button ── -->
-      <div class="results__load-more" v-if="!isLoading && filteredLawyers.length > 0">
+      <!-- ── Show more ── -->
+      <div class="results__load-more" v-if="!isLoading && !error && filteredLawyers.length > 0">
         <button
           class="results__load-btn"
           @click="loadMore"
@@ -164,10 +141,11 @@
           <span v-if="visibleCount < filteredLawyers.length">Show More Lawyers</span>
           <span v-else>All {{ filteredLawyers.length }} lawyers shown</span>
           <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-            <path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z" />
+            <path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"/>
           </svg>
         </button>
       </div>
+
     </div>
   </section>
 </template>
@@ -178,29 +156,27 @@ import LawyerCard from '@/components/home/LawyerCard.vue'
 import '@/styles/home/ResultsSection.css'
 
 const props = defineProps({
-  lawyers: { type: Array, default: () => [] },
-  searchQuery: { type: String, default: '' },
+  lawyers:     { type: Array,   default: () => [] },
+  searchQuery: { type: String,  default: '' },
   hasSearched: { type: Boolean, default: false },
-  isLoading: { type: Boolean, default: false },
+  isLoading:   { type: Boolean, default: false },
+  error:       { type: String,  default: null },   // ← new: store error message
 })
 
 defineEmits(['view-profile', 'contact'])
 
-const filtersOpen = ref(false)
-const sortBy = ref('recommended')
+const filtersOpen  = ref(false)
+const sortBy       = ref('recommended')
 const visibleCount = ref(6)
 
-const filters = ref({
-  specialty: '',
-  location: '',
-  minRating: 0,
-  maxRate: 1000,
-})
+const filters = ref({ specialty: '', location: '', minRating: 0, maxRate: 1000 })
 
 const truncatedQuery = computed(() =>
   props.searchQuery.length > 60 ? props.searchQuery.slice(0, 60) + '…' : props.searchQuery,
 )
 
+// Filter options derived from real data —
+// lawyers are normalised so we use camelCase fields
 const specialtyOptions = computed(() => {
   const set = new Set(props.lawyers.map((l) => l.primarySpecialty).filter(Boolean))
   return [...set]
@@ -211,27 +187,30 @@ const locationOptions = computed(() => {
   return [...set]
 })
 
-const activeFilterCount = computed(
-  () =>
-    [
-      filters.value.specialty,
-      filters.value.location,
-      filters.value.minRating > 0,
-      filters.value.maxRate < 1000,
-    ].filter(Boolean).length,
+const activeFilterCount = computed(() =>
+  [
+    filters.value.specialty,
+    filters.value.location,
+    filters.value.minRating > 0,
+    filters.value.maxRate < 1000,
+  ].filter(Boolean).length,
 )
 
 const filteredLawyers = computed(() => {
   let list = [...props.lawyers]
+
   if (filters.value.specialty)
     list = list.filter((l) => l.primarySpecialty === filters.value.specialty)
-  if (filters.value.location) list = list.filter((l) => l.location === filters.value.location)
-  if (filters.value.minRating > 0) list = list.filter((l) => l.rating >= filters.value.minRating)
-  if (filters.value.maxRate < 1000) list = list.filter((l) => l.hourlyRate <= filters.value.maxRate)
+  if (filters.value.location)
+    list = list.filter((l) => l.location === filters.value.location)
+  if (filters.value.minRating > 0)
+    list = list.filter((l) => l.rating >= filters.value.minRating)
+  if (filters.value.maxRate < 1000)
+    list = list.filter((l) => l.hourlyRate <= filters.value.maxRate)
 
-  if (sortBy.value === 'rating') list.sort((a, b) => b.rating - a.rating)
+  if (sortBy.value === 'rating')      list.sort((a, b) => b.rating - a.rating)
   else if (sortBy.value === 'experience') list.sort((a, b) => b.yearsExperience - a.yearsExperience)
-  else if (sortBy.value === 'rate_asc') list.sort((a, b) => a.hourlyRate - b.hourlyRate)
+  else if (sortBy.value === 'rate_asc')  list.sort((a, b) => a.hourlyRate - b.hourlyRate)
   else if (sortBy.value === 'rate_desc') list.sort((a, b) => b.hourlyRate - a.hourlyRate)
 
   return list
@@ -239,20 +218,9 @@ const filteredLawyers = computed(() => {
 
 const visibleLawyers = computed(() => filteredLawyers.value.slice(0, visibleCount.value))
 
-const loadMore = () => {
-  visibleCount.value = Math.min(visibleCount.value + 6, filteredLawyers.value.length + 6)
-}
-const clearFilters = () => {
-  filters.value = { specialty: '', location: '', minRating: 0, maxRate: 1000 }
-}
-const applySort = () => {
-  visibleCount.value = 6
-}
+const loadMore    = () => { visibleCount.value = Math.min(visibleCount.value + 6, filteredLawyers.value.length + 6) }
+const clearFilters = () => { filters.value = { specialty: '', location: '', minRating: 0, maxRate: 1000 } }
+const applySort   = () => { visibleCount.value = 6 }
 
-watch(
-  () => props.searchQuery,
-  () => {
-    visibleCount.value = 6
-  },
-)
+watch(() => props.searchQuery, () => { visibleCount.value = 6 })
 </script>

@@ -1,190 +1,90 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import { searchLawyers as apiSearch, getLawyerById as apiGetById } from '@/services/api'
+import { searchLawyers as apiSearch, getLawyerById as apiFetch } from '@/services/api'
 
-// ─── Mock data (used when backend is not yet running) ─────────────────────────
-const MOCK_LAWYERS = [
-  {
-    id: 1,
-    name: 'Rami Khoury',
-    specialties: ['Personal Injury', 'Civil Litigation'],
-    jurisdictions: ['Court of Appeal', 'First Instance Court'],
-    yearsExperience: 15,
-    location: 'Beirut',
-    hourlyRate: 150,
-    rating: 5.0,
-    reviewsCount: 124,
-    languages: ['Arabic', 'English'],
-    education: 'Lebanese University – Faculty of Law',
-    gender: 'Male',
-    bio: 'Specializes in automotive liability and insurance claims. Has successfully recovered millions for clients involved in severe accidents across Lebanon.',
-    verified: true,
-    isOnline: true,
-    image: 'https://i.pravatar.cc/150?img=11',
-    matchScore: 0.95,
-  },
-  {
-    id: 2,
-    name: 'Sarah Nassar',
-    specialties: ['Traffic Law', 'Civil Liability'],
-    jurisdictions: ['Magistrate Court', 'First Instance Court'],
-    yearsExperience: 8,
-    location: 'Jounieh',
-    hourlyRate: 100,
-    rating: 4.8,
-    reviewsCount: 89,
-    languages: ['Arabic', 'French'],
-    education: 'Saint Joseph University – Faculty of Law',
-    gender: 'Female',
-    bio: "Passionate about defending clients' rights. Expert in negotiating with insurance companies to ensure fair compensation for medical expenses and damages.",
-    verified: true,
-    isOnline: false,
-    image: 'https://i.pravatar.cc/150?img=5',
-    matchScore: 0.88,
-  },
-  {
-    id: 3,
-    name: 'Georges Abou Zeid',
-    specialties: ['Commercial Litigation', 'Corporate Law'],
-    jurisdictions: ['Court of Cassation', 'Court of Appeal'],
-    yearsExperience: 22,
-    location: 'Beirut',
-    hourlyRate: 200,
-    rating: 4.9,
-    reviewsCount: 210,
-    languages: ['Arabic', 'English', 'French'],
-    education: 'Lebanese American University – School of Law',
-    gender: 'Male',
-    bio: 'Extensive trial experience in complex personal injury and commercial cases. Handles the toughest cases. Free initial consultation available.',
-    verified: true,
-    isOnline: false,
-    image: 'https://i.pravatar.cc/150?img=14',
-    matchScore: 0.83,
-  },
-  {
-    id: 4,
-    name: 'Lara Haddad',
-    specialties: ['Family Law', 'Civil Disputes'],
-    jurisdictions: ['Personal Status Court', 'First Instance Court'],
-    yearsExperience: 6,
-    location: 'Tripoli',
-    hourlyRate: 80,
-    rating: 4.7,
-    reviewsCount: 56,
-    languages: ['Arabic'],
-    education: 'Lebanese University – Faculty of Law',
-    gender: 'Female',
-    bio: 'Compassionate representation for families and individuals. Specializes in family law while also handling civil disputes arising from accidents.',
-    verified: true,
-    isOnline: true,
-    image: 'https://i.pravatar.cc/150?img=9',
-    matchScore: 0.76,
-  },
-  {
-    id: 5,
-    name: 'Charbel Rizk',
-    specialties: ['Criminal Law', 'Traffic Offenses'],
-    jurisdictions: ['Criminal Court', 'First Instance Court'],
-    yearsExperience: 11,
-    location: 'Zahle',
-    hourlyRate: 120,
-    rating: 5.0,
-    reviewsCount: 42,
-    languages: ['Arabic', 'French'],
-    education: 'Holy Spirit University of Kaslik – Faculty of Law',
-    gender: 'Male',
-    bio: 'Focused on criminal defense and traffic offenses. Knows the local courts inside and out and consistently achieves favorable outcomes for clients.',
-    verified: true,
-    isOnline: false,
-    image: 'https://i.pravatar.cc/150?img=17',
-    matchScore: 0.72,
-  },
-  {
-    id: 6,
-    name: 'Maya Sleiman',
-    specialties: ['Mediation', 'Arbitration', 'Civil Law'],
-    jurisdictions: ['Arbitration Panel', 'First Instance Court'],
-    yearsExperience: 4,
-    location: 'Sidon',
-    hourlyRate: 70,
-    rating: 4.6,
-    reviewsCount: 18,
-    languages: ['Arabic', 'English'],
-    education: 'Lebanese University – Faculty of Law',
-    gender: 'Female',
-    bio: 'Modern approach to legal disputes. Prefers mediation and arbitration to settle claims quickly and efficiently without long court battles.',
-    verified: true,
-    isOnline: true,
-    image: 'https://i.pravatar.cc/150?img=25',
-    matchScore: 0.68,
-  },
-]
-
-// ─── Store ────────────────────────────────────────────────────────────────────
 export const useLawyerStore = defineStore('lawyer', () => {
-  const lawyers = ref([])
+  // ── State ─────────────────────────────────────────────────────────────────
+  const lawyers       = ref([])
   const currentLawyer = ref(null)
-  const isLoading = ref(false)
-  const error = ref(null)
+  const isLoading     = ref(false)
+  const error         = ref(null)
+
+  // ── Client-side prompt guard (mirrors backend validation) ─────────────────
+  // Gives instant feedback before the round-trip.
+  const validatePrompt = (prompt) => {
+    if (!prompt || typeof prompt !== 'string') return false
+    const trimmed = prompt.trim()
+    if (trimmed.length < 50) return false
+    const sentences = trimmed.split(/[.!?\n]+/).filter((s) => s.trim().length > 0)
+    if (sentences.length < 4) return false
+    return /^[A-Za-z0-9\s.,!?'"():;-]+$/.test(trimmed)
+  }
+
+  // ── Actions ───────────────────────────────────────────────────────────────
 
   /**
-   * Search lawyers by case description.
-   * Falls back to filtered mock data if API is unavailable.
+   * Semantic lawyer search.
+   * Sets error instead of throwing so the template can show inline feedback.
    */
-  const searchLawyers = async (query) => {
+  const searchLawyers = async (prompt) => {
+    error.value   = null
+    lawyers.value = []
     isLoading.value = true
-    error.value = null
+
+    if (!validatePrompt(prompt)) {
+      error.value =
+        'Please describe your legal situation in at least 4 complete sentences ' +
+        '(50+ characters, English only) so we can find the right match.'
+      isLoading.value = false
+      return
+    }
 
     try {
-      const results = await apiSearch(query)
-      lawyers.value = results
-      return results
+      lawyers.value = await apiSearch(prompt)
     } catch (err) {
-      console.warn('[Store] API unavailable, using mock data:', err.message)
-      // Simulate a short delay to mimic a real API call
-      await new Promise((r) => setTimeout(r, 900))
-      lawyers.value = MOCK_LAWYERS
-      return MOCK_LAWYERS
+      error.value = err.message
+      lawyers.value = []
     } finally {
       isLoading.value = false
     }
   }
 
   /**
-   * Fetch a single lawyer by ID.
-   * Falls back to mock data if API is unavailable.
+   * Fetch one lawyer profile by ID.
    */
   const getLawyerById = async (id) => {
-    isLoading.value = true
-    error.value = null
+    error.value         = null
     currentLawyer.value = null
+    isLoading.value     = true
+
+    const numericId = Number(id)
+    if (!Number.isInteger(numericId) || numericId <= 0) {
+      error.value     = `Invalid lawyer ID: ${id}`
+      isLoading.value = false
+      return
+    }
 
     try {
-      const result = await apiGetById(id)
-      currentLawyer.value = result
-      return result
+      currentLawyer.value = await apiFetch(numericId)
     } catch (err) {
-      console.warn('[Store] API unavailable, using mock data:', err.message)
-      await new Promise((r) => setTimeout(r, 400))
-      const found = MOCK_LAWYERS.find((l) => l.id === Number(id)) || null
-      currentLawyer.value = found
-      return found
+      error.value = err.message
     } finally {
       isLoading.value = false
     }
   }
 
-  const clearCurrentLawyer = () => {
-    currentLawyer.value = null
-  }
+  const clearLawyers      = () => { lawyers.value = [];       error.value = null }
+  const clearCurrentLawyer = () => { currentLawyer.value = null; error.value = null }
 
   return {
     lawyers,
     currentLawyer,
     isLoading,
     error,
+    validatePrompt,
     searchLawyers,
     getLawyerById,
+    clearLawyers,
     clearCurrentLawyer,
   }
 })

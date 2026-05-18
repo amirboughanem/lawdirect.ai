@@ -9,17 +9,23 @@
     <!-- ── Header: avatar + info ── -->
     <div class="lawyer-card__header">
 
-      <!-- Avatar with optional online dot -->
       <div class="lawyer-card__avatar-wrap">
+        <!-- Real image from Supabase storage -->
         <img
-          v-if="lawyer.image"
-          :src="lawyer.image"
+          v-if="lawyerImage"
+          :src="lawyerImage"
           :alt="`Photo of ${lawyer.name}`"
           class="lawyer-card__avatar"
           loading="lazy"
+          @error="onImageError"
         />
-        <div v-else class="lawyer-card__avatar-fallback">{{ initials }}</div>
-        <!-- Green dot bottom-right when online -->
+        <!-- Guest icon fallback — shown when image is null or fails to load -->
+        <div v-else class="lawyer-card__avatar-fallback" :aria-label="`${lawyer.name} – no photo`">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+          </svg>
+        </div>
+
         <div v-if="lawyer.isOnline" class="lawyer-card__status-dot" aria-hidden="true"></div>
       </div>
 
@@ -27,7 +33,6 @@
       <div>
         <div class="lawyer-card__name-row">
           <h3 class="lawyer-card__name">{{ lawyer.name }}</h3>
-          <!-- Verified checkmark -->
           <svg
             v-if="lawyer.verified"
             class="lawyer-card__verified"
@@ -39,9 +44,8 @@
           </svg>
         </div>
 
-        <p class="lawyer-card__specialty">{{ lawyer.specialties?.[0] }}</p>
+        <p class="lawyer-card__specialty">{{ lawyer.primarySpecialty }}</p>
 
-        <!-- Star + number + count -->
         <div class="lawyer-card__rating">
           <svg class="lawyer-card__star-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
             <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
@@ -52,14 +56,14 @@
       </div>
     </div>
 
-    <!-- ── Meta tags: exp · location · rate ── -->
+    <!-- ── Tags: exp · location · rate ── -->
     <div class="lawyer-card__tags">
       <span class="lawyer-card__tag">{{ lawyer.yearsExperience }} Yrs Exp.</span>
       <span class="lawyer-card__tag">{{ lawyer.location }}</span>
       <span class="lawyer-card__tag">${{ lawyer.hourlyRate }}/hr</span>
     </div>
 
-    <!-- ── AI match bar (only when provided) ── -->
+    <!-- ── AI match bar (only when similarity_score was returned) ── -->
     <div v-if="lawyer.matchScore !== undefined" class="lawyer-card__match">
       <div class="lawyer-card__match-label">
         <span>AI Match</span>
@@ -79,10 +83,10 @@
       </div>
     </div>
 
-    <!-- ── Bio snippet (3 lines max) ── -->
-    <p class="lawyer-card__bio">{{ lawyer.bio }}</p>
+    <!-- ── Bio snippet ── -->
+    <p class="lawyer-card__bio">{{ cleanBio }}</p>
 
-    <!-- ── Action buttons ── -->
+    <!-- ── Actions ── -->
     <div class="lawyer-card__actions">
       <button
         class="lawyer-card__btn lawyer-card__btn--outline"
@@ -103,25 +107,26 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { ref, computed } from 'vue'
 import '@/styles/home/LawyerCard.css'
 
 const props = defineProps({
-  lawyer: {
-    type: Object,
-    required: true,
-  },
+  lawyer: { type: Object, required: true },
 })
 
 defineEmits(['view-profile', 'contact'])
 
-const initials = computed(() => {
-  if (!props.lawyer.name) return '?'
-  return props.lawyer.name
-    .split(' ')
-    .slice(0, 2)
-    .map(n => n[0])
-    .join('')
-    .toUpperCase()
+// If the Supabase image URL 404s (e.g. file not uploaded yet),
+// clear it so the guest icon fallback renders instead
+const imgFailed = ref(false)
+const onImageError = () => { imgFailed.value = true }
+
+const lawyerImage = computed(() => imgFailed.value ? null : props.lawyer.image)
+
+const cleanBio = computed(() => {
+  const bio = props.lawyer.bio ?? ''
+  // Take only the first line (the human-readable intro)
+  const firstLine = bio.split('\n')[0]?.trim()
+  return firstLine || bio
 })
 </script>
